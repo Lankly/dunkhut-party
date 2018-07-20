@@ -11,9 +11,7 @@ app.use(expressLayouts);
 
 
 // Resources
-['resources', 'styles'].forEach((path) => {
-  app.use(`/${path}`, express.static(__dirname + `/${path}`));
-})
+  app.use('/resources', express.static(__dirname + '/resources'));
 
 // Routes
 app.get('/', function(req, res) {
