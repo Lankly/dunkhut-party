@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+
+  <% /* Place any styles in the page in this section. */ %>
+  <link rel="stylesheet" type="text/css" href="/resources/styles/main.css"></link> 
+  <%- style %>
+</head>
+<body>
+  <header>
+    <% /* Optional Header */ %>
+    <%- defineContent('header') %>
+  </header>
+
+  <%- body %>
+
+  <footer>
+    <% /* Optional Footer */ %>
+    <%- defineContent('footer') %>
+  </footer>
+
+  <% /* Place any scripts contained in views at the end of the page. */ %>
+  <%- script %>
+</body>
+</html>
+

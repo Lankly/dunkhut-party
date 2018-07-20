@@ -1,0 +1,15 @@
+body {
+  background: white
+    url(/resources/images/dunkhut_bg.gif)
+    repeat
+    top left;
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 24px;
+  color: #402;
+}
+
+iframe: {
+  background-color: #fff;
+}
+
