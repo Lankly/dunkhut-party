@@ -3,6 +3,12 @@ var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var app = express();
 
+// Get form data
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Use EJS view engine + Layouts
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -15,12 +21,10 @@ app.use(expressLayouts);
 app.use('/resources', express.static(__dirname + '/resources'));
 
 // Routes
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.render('index', { title: 'dunkhut.party' });
-})
-app.get('/tasks', function(req, res) {
-  res.render('tasks', {title: 'TODO' });
-})
+});
+require('./js/tasks')(app);
 
 // Start server
 app.listen(3000);

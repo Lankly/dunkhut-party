@@ -18,11 +18,50 @@ body {
 
 .content {
   background-color: white;
+  font-family: tahoma;
   margin-left: auto;
   margin-right: auto;
   max-width: 2000px;
-  min-height: 200px;
   min-width: 800px;
+  padding: 2em;
   width: 50%;
 }
 
+ol {
+  padding: 0;
+}
+
+/* Header should not obviously be a link */
+.header-link, .header-link h1 {
+  color: #402;
+  text-decoration: none;
+}
+
+/* Alert Box */
+#alert-box {
+  /* start off the left side of the screen */
+  position: fixed;
+  top: 35%;
+  bottom: 35%;
+  right: 100%;
+  /* give it a decent size */
+  width: 30%;
+  height: 30%;
+  /* make it look pretty */
+  background-color: white;
+  border-radius: .25em;
+  filter: drop-shadow(0 0 0.75rem lightgreen);
+  /* center content  */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* icon should be big and green */
+  color: lime;
+  font-size: 32pt;
+}
+
+
+/* Jquery UI */
+.ui-dialog, .ui-datepicker {
+  font-size: 12pt !important;
+}

@@ -1,12 +1,41 @@
+<script src="/resources/scripts/tasks.js"></script>
 <div class="container">
   <div class="content">
     <%if (!locals.todo || !todo.length) {%>
-      <div class="big-block">All done!</div>
+      <div class="big-block">
+        All done!
+        <br />
+        <button onclick="openCreateModal();">Add a Task</button>
+      </div>
     <% } else { %>
       TODO:
+      <ol>
+        <% for (let i = 0; i < todo.length; ++i) { %>
+          <li><%= todo[i].title %></li>
+        <% } %>
+      </ol>
+      <button onclick="openCreateModal();">Add Another Task</button>
     <% } %>
+
+    <!-- MODALS -->
+    <div id="createModal" title="Add A New Task" hidden>
+      <form id="createTask">
+        <input type="text" name="title" placeholder="Title" /><br />
+        <textarea name="description"
+          rows="4"
+          cols="50"
+          maxlength="140"
+          placeholder="Description" ></textarea><br />
+        <input type="text" name="assigned_to" placeholder="Assigned To" />
+        <input type="text" name="start_time" id="datepicker" /><br />
+        <input type="submit" value="Submit">
+      </form> 
+    </div>
+    <div id="alert-box">
+      <div class="fas fa-check-square"></div>
+    </div>
   </div>
 </div>
 
 <%- contentFor('header') %>
-<h1>Task List</h1>
+<a class="header-link" href="/"><h1>Task List</h1></a>
