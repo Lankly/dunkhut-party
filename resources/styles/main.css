@@ -9,7 +9,20 @@ body {
   color: #402;
 }
 
-iframe: {
-  background-color: #fff;
+.big-block {
+  padding: 10em;
+}
+
+.container {
+}
+
+.content {
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 2000px;
+  min-height: 200px;
+  min-width: 800px;
+  width: 50%;
 }
 

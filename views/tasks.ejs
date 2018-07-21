@@ -1,0 +1,12 @@
+<div class="container">
+  <div class="content">
+    <%if (!locals.todo || !todo.length) {%>
+      <div class="big-block">All done!</div>
+    <% } else { %>
+      TODO:
+    <% } %>
+  </div>
+</div>
+
+<%- contentFor('header') %>
+<h1>Task List</h1>
