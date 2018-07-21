@@ -2,18 +2,31 @@
 <div class="container">
   <div class="content">
     <%if (!locals.todo || !todo.length) {%>
-      <div class="big-block">
+      <div>
         All done!
         <br />
         <button onclick="openCreateModal();">Add a Task</button>
       </div>
     <% } else { %>
       TODO:
-      <ol>
-        <% for (let i = 0; i < todo.length; ++i) { %>
-          <li><%= todo[i].title %></li>
-        <% } %>
-      </ol>
+      <table class="todo-table center">
+        <tbody>
+          <% for (let i = 0; i < todo.length; ++i) { %>
+            <% /* When you update this, do not forget to update createTask */ %>
+            <tr>
+              <td><%= i + 1 %>.</td>
+              <td><%= todo[i].title %></td>
+              <td>
+                <a class="delete-button"
+                   onclick="deleteTask(this, <%= todo[i].id %>)">
+                  <i class="fas fa-times-circle"></i>
+                </a>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+      <!-- Create Button -->
       <button onclick="openCreateModal();">Add Another Task</button>
     <% } %>
 
@@ -27,9 +40,17 @@
           maxlength="140"
           placeholder="Description" ></textarea><br />
         <input type="text" name="assigned_to" placeholder="Assigned To" />
-        <input type="text" name="start_time" id="datepicker" /><br />
+        <input id="datepicker"
+               title="Start Date"
+               name="start_time"
+               type="text" /><br />
         <input type="submit" value="Submit">
       </form> 
+    </div>
+    <div id="confirmModal" title="Confirm Delete" hidden>
+      <p>Are you sure you wish to
+        <span id="confirm-action">delete</span>
+        this task?</p>
     </div>
     <div id="alert-box">
       <div class="fas fa-check-square"></div>

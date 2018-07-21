@@ -28,8 +28,18 @@ module.exports = function (app) {
     });
 
     createTask(task).then( (data) => {
-      res.end(JSON.stringify({ status: 200 }));
+      res.end(JSON.stringify({ status: 200, obj: data }));
     })
+      .catch( (err) => {
+        console.log(err);
+        res.end(JSON.stringify(err));
+      });
+  });
+  app.post('/tasks/delete', function (req, res) {
+    deleteTask(req.param("id") || req.id || req.params.id)
+      .then( (data) => {
+        res.end(JSON.stringify({status: 200, obj: data}));
+      })
       .catch( (err) => {
         console.log(err);
         res.end(JSON.stringify(err));
@@ -48,7 +58,9 @@ module.exports = function (app) {
     // Remove last ", "
     query = query.slice(0, -2);
     // Finish values parentheses
-    query += ")"
+    query += ") "
+    // Ask to get back id of inserted task
+    query += "RETURNING id;"
 
     // Ensure only our args get sent
     let new_task = {};
@@ -57,6 +69,10 @@ module.exports = function (app) {
     console.log(query, new_task);
 
     return db.query(query, new_task);
+  }
+
+  function deleteTask (id) {
+    return db.query("DELETE FROM tasks WHERE id = ${id};", { id: id });
   }
 
   function getCompletedTasks () {

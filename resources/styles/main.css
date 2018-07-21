@@ -3,14 +3,11 @@ body {
     url(/resources/images/dunkhut_bg.gif)
     repeat
     top left;
+  color: #402;
   text-align: center;
   font-family: 'Share Tech Mono', monospace;
   font-size: 24px;
-  color: #402;
-}
-
-.big-block {
-  padding: 10em;
+  margin-bottom: 2em;
 }
 
 .container {
@@ -49,7 +46,7 @@ ol {
   height: 30%;
   /* make it look pretty */
   background-color: white;
-  border-radius: .25em;
+  border-radius: .1em;
   filter: drop-shadow(0 0 0.75rem lightgreen);
   /* center content  */
   display: flex;
@@ -60,6 +57,31 @@ ol {
   font-size: 64pt;
 }
 
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.delete-button {
+  color: red;
+}
+.delete-button:hover {
+  cursor: pointer;
+}
+
+/* TODO-list page */
+
+.todo-table td {
+  padding: .5em;
+  margin: 1em;
+}
+.todo-table td:nth-child(1) {
+  text-align: right;
+}
+.todo-table td:nth-child(2), 
+.todo-table td:nth-child(3) {
+  text-align: left;
+}
 
 /* Jquery UI */
 .ui-dialog, .ui-datepicker {
