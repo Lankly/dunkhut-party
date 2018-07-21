@@ -8,7 +8,7 @@ $( function () {
 
   // Add initial value of today
   let cur_date = new Date().toLocaleString().split(', ')[0];
-  $('#datepicker').datepicker( "setDate", cur_date);
+  $('#datepicker').datepicker("setDate", cur_date);
 
   $('#createTask').submit((e) => {
       e.preventDefault();
@@ -27,17 +27,20 @@ $( function () {
           alert_box.animate({
             // Move to center
             right: (50 - alert_box_width / 2) + "%"
-          }, 600, () => {
+          }, 500, () => {
             // Wait half a second
             setTimeout(() => {
               // Slide off right side of screen
               alert_box.animate({
                 right: "-" + (alert_box_width / 2) + "%"
-              }, 800, () => {
+              }, 500, () => {
                 // Reset to offscreen on the left
                 alert_box.css("right", "100%");
               });
-            }, 600)
+            }, 500)
+
+            // Add new item to list
+            $('ol').append('<li>' + $('#addTitle').val() + '</li>');
           });
         }
       });
