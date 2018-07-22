@@ -6,9 +6,9 @@
       <tbody>
         <% for (let i = 0; i < todo.length; ++i) { %>
           <% /* When you update this, do not forget to update createTask */ %>
-          <tr>
+          <tr class="todo-item-main">
             <td><%= i + 1 %>.</td>
-            <td><%= todo[i].title %></td>
+            <td <%= todo[i].description ? `class=${"is-link"} onclick=toggleDescription(${i + 1})` : "" %>><%= todo[i].title %></td>
             <td>
               <a class="check-button"
                  onclick="completeTask(this, <%= todo[i].id %>)">
@@ -20,6 +20,11 @@
               </a>
             </td>
           </tr>
+          <% if (todo[i].description) { %>
+            <tr class="todo-item-description" hidden>
+              <td colspan="3"><%= todo[i].description %></td>
+            </tr>
+          <% } %>
         <% } %>
       </tbody>
     </table>

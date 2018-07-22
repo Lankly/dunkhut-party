@@ -69,27 +69,34 @@ function showAlertBox (midway_func) {
     }, 500)
 
     midway_func();
-
-    // The midway_func typically changes the table, so reset status
-    setStatusMessage();
   });
 }
 
-function setStatusMessage () {
-  if ($('.todo-table td').length < 1) {
-    $('#todo-table-status').text("All Done!");
+function toggleDescription (index) {
+  let desc = $(`.todo-item-main:nth-child(${index})`)
+    .next(".todo-item-description")
+
+  if (desc.is(":hidden")) {
+    desc.show();
+    desc
+      .find('td')
+      .wrapInner('<div style="display: none;" />')
+      .parent()
+      .find('td > div')
+      .slideDown(700, function () {
+     
+       let  $set = $(this);
+       $set.replaceWith($set.contents());
+     })
   }
   else {
-    $('#todo-table-status').text("TODO:");
+    desc.hide();
   }
 }
 
 /* After page load */
 $( function () {
   $('#datepicker').datepicker();
-
-  // Set status message at start
-  setStatusMessage();
 
   // Add initial value of today
   let cur_date = new Date().toLocaleString().split(', ')[0];
@@ -123,10 +130,6 @@ $( function () {
             <td>${cur_count + 1}.</td>
             <td>${new_title}</td>
             <td>
-              <a class="check-button"
-                 onclick="completeTask(this, ${data.obj[0].id})">
-                <i class="fas fa-check-circle"></i>
-              </a>
               <a class="delete-button" onclick="deleteTask(this, ${data.obj[0].id})">
                 <i class="fas fa-times-circle"></i>
               </a>

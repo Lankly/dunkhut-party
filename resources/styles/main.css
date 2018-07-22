@@ -76,18 +76,32 @@ ol {
   cursor: pointer;
 }
 
+.is-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* TODO-list page */
 
 .todo-table td {
   padding: .5em;
   margin: 1em;
 }
-.todo-table td:nth-child(1) {
+.todo-item-main td {
+  padding-bottom: 0px;
+}
+.todo-item-main td:nth-child(1) {
   text-align: right;
 }
-.todo-table td:nth-child(2), 
-.todo-table td:nth-child(3) {
+.todo-item-main td:nth-child(2), 
+.todo-item-main td:nth-child(3) {
   text-align: left;
+}
+
+.todo-item-description td {
+  font-size: 10pt;
+  padding-top: 2px;
+  text-align: center;
 }
 
 /* Jquery UI */
