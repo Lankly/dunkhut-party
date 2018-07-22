@@ -21,6 +21,16 @@ module.exports = function (app) {
         res.end(JSON.stringify(err));
       });
   });
+  app.post('/tasks/complete', function (req, res) {
+    completeTask(getParam(req, "id"), getParam(req, "completed_by"))
+      .then( (data) => {
+        res.end(JSON.stringify({status: 200, obj: data}));
+      })
+      .catch( (err) => {
+        console.log(err);
+        res.end(JSON.stringify(err));
+      });
+  });
   app.post('/tasks/create', function (req, res) {
     let task = { };
     ["assigned_to", "description", "start_time", "title"].forEach( (prop) => {
@@ -36,7 +46,7 @@ module.exports = function (app) {
       });
   });
   app.post('/tasks/delete', function (req, res) {
-    deleteTask(req.param("id") || req.id || req.params.id)
+    deleteTask(getParam(req, "id"))
       .then( (data) => {
         res.end(JSON.stringify({status: 200, obj: data}));
       })
@@ -47,6 +57,13 @@ module.exports = function (app) {
   });
 
   // Functions
+  function completeTask (id, completed_by) {
+    return db.query(
+      "UPDATE tasks SET completed_by = ${completed_by}, \
+          date_completed = localtimestamp \
+       WHERE id = ${id}", { id: id, completed_by: completed_by });
+  }
+
   function createTask (task) {
     let args = ["assigned_to", "description", "start_time", "title"];
 
@@ -66,8 +83,6 @@ module.exports = function (app) {
     let new_task = {};
     args.forEach((arg) => { new_task[arg] = task[arg]; });
 
-    console.log(query, new_task);
-
     return db.query(query, new_task);
   }
 
@@ -81,6 +96,13 @@ module.exports = function (app) {
 
   function getIncompleteTasks () {
     return db.any("SELECT * FROM tasks WHERE date_completed IS NULL;");
+  }
+
+  // Helpers
+  function getParam (req, param_name) {
+    return req.param(param_name)
+      || req.params[param_name]
+      || req[param_name];
   }
 }
 

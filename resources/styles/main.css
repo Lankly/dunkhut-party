@@ -62,6 +62,13 @@ ol {
   margin-right: auto;
 }
 
+.check-button {
+  color: lime;
+}
+.check-button:hover {
+  cursor: pointer;
+}
+
 .delete-button {
   color: red;
 }

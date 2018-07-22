@@ -2,6 +2,23 @@ function openCreateModal () {
   $('#createModal').dialog({ width: 500 });
 }
 
+function completeTask (elem, id) {
+  $.ajax({
+    url: '/tasks/complete',
+    context: this,
+    type: 'post',
+    dataType: 'json',
+    mimeType: 'text/json; charset=x-user-defined',
+    data: { id: id, completed_by: "Web Interface" },
+    success: function (data) {
+      showAlertBox(() => {
+        // elem is a <td>
+        $(elem).parent().parent().remove();
+      });
+    }
+  });
+}
+
 function deleteTask (elem, id) {
   $("#confirmModal").dialog({
     buttons : {
