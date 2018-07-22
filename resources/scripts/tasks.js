@@ -69,12 +69,27 @@ function showAlertBox (midway_func) {
     }, 500)
 
     midway_func();
+
+    // The midway_func typically changes the table, so reset status
+    setStatusMessage();
   });
+}
+
+function setStatusMessage () {
+  if ($('.todo-table td').length < 1) {
+    $('#todo-table-status').text("All Done!");
+  }
+  else {
+    $('#todo-table-status').text("TODO:");
+  }
 }
 
 /* After page load */
 $( function () {
   $('#datepicker').datepicker();
+
+  // Set status message at start
+  setStatusMessage();
 
   // Add initial value of today
   let cur_date = new Date().toLocaleString().split(', ')[0];
@@ -108,6 +123,10 @@ $( function () {
             <td>${cur_count + 1}.</td>
             <td>${new_title}</td>
             <td>
+              <a class="check-button"
+                 onclick="completeTask(this, ${data.obj[0].id})">
+                <i class="fas fa-check-circle"></i>
+              </a>
               <a class="delete-button" onclick="deleteTask(this, ${data.obj[0].id})">
                 <i class="fas fa-times-circle"></i>
               </a>
