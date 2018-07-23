@@ -9,7 +9,7 @@
           <tr id="<%= todo[i].id %>" class="todo-item-main">
             <td><%= i + 1 %>.</td>
             <td class="<%= todo[i].description ? "is-link" : "" %>"
-                onclick="<%= todo[i].description ? `toggleDescription(${i + 1})` : "" %>">
+                onclick="<%= todo[i].description ? `toggleDescription(${i})` : "" %>">
               <%= todo[i].title %>
               <% if (todo[i].description) { %>
                 <i class="small-icon fas fa-chevron-down"></i>

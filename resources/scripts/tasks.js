@@ -28,7 +28,6 @@ function completeTask (elem, id) {
     }
   });
 }
-
 function deleteTask (elem, id) {
   $("#confirmModal").dialog({
     buttons : {
@@ -58,7 +57,6 @@ function deleteTask (elem, id) {
   });
   $('#confirmModal').dialog("open");
 }
-
 function reopenTask (elem, id) {
   $.ajax({
     url: '/tasks/reopen',
@@ -133,7 +131,7 @@ function showAlertBox (midway_func) {
 }
 
 function toggleDescription (index) {
-  let desc = $(`.todo-item-main:nth-child(${index})`)
+  let desc = $($('.todo-item-main')[index])
     .next(".todo-item-description")
 
   if (desc.is(":hidden")) {
