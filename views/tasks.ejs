@@ -8,7 +8,13 @@
           <% /* When you update this, do not forget to update createTask */ %>
           <tr class="todo-item-main">
             <td><%= i + 1 %>.</td>
-            <td <%= todo[i].description ? `class=${"is-link"} onclick=toggleDescription(${i + 1})` : "" %>><%= todo[i].title %></td>
+            <td class="<%= todo[i].description ? "is-link" : "" %>"
+                onclick="<%= todo[i].description ? `toggleDescription(${i + 1})` : "" %>">
+              <%= todo[i].title %>
+              <% if (todo[i].description) { %>
+                <i class="small-icon fas fa-chevron-down"></i>
+              <% } %>
+            </td>
             <td>
               <a class="check-button"
                  onclick="completeTask(this, <%= todo[i].id %>)">

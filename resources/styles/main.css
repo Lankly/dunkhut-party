@@ -81,6 +81,10 @@ ol {
   cursor: pointer;
 }
 
+.small-icon {
+  font-size: 8pt;
+}
+
 /* TODO-list page */
 
 .todo-table td {

@@ -69,6 +69,9 @@ function showAlertBox (midway_func) {
     }, 500)
 
     midway_func();
+
+    // midway_func typically changes table, so fix table
+    fixTable();
   });
 }
 
@@ -94,6 +97,19 @@ function toggleDescription (index) {
   }
 }
 
+function fixTable () {
+  $('.todo-item-main').each(function (index) {
+    $(this).find('td:nth-child(1)').text((index + 1) + ".");
+  });
+
+  if ($('.todo-item-main').length > 0) {
+    $('#todo-table-status').text("TODO:");
+  }
+  else {
+    $('#todo-table-status').text("All done!");
+  }
+}
+
 /* After page load */
 $( function () {
   $('#datepicker').datepicker();
@@ -104,6 +120,8 @@ $( function () {
 
   // Initialize confirm dialog
   $('#confirmModal').dialog({autoOpen: false, modal: true });
+
+  fixTable();
 
   // Hook into the submit function for createTask
   $('#createTask').submit((e) => {
@@ -125,11 +143,16 @@ $( function () {
 
         showAlertBox(() => {
           // Add new item to table
-          let cur_count = $('.todo-table tr').length;
-          let new_row = `<tr>
+          let cur_count = $('.todo-item-main').length;
+          let new_row = `<tr class="todo-item-main">
             <td>${cur_count + 1}.</td>
             <td>${new_title}</td>
             <td>
+              <a class="check-button"
+                 onclick="completeTask(this, ${data.obj[0].id})">
+                <i class="fas fa-check-circle"></i>
+              </a>
+ 
               <a class="delete-button" onclick="deleteTask(this, ${data.obj[0].id})">
                 <i class="fas fa-times-circle"></i>
               </a>
