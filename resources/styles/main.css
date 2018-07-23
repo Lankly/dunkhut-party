@@ -76,6 +76,13 @@ ol {
   cursor: pointer;
 }
 
+.reopen-button {
+  color: dodgerblue;
+}
+.reopen-button:hover {
+  cursor: pointer;
+}
+
 .is-link:hover {
   text-decoration: underline;
   cursor: pointer;
@@ -101,10 +108,20 @@ ol {
 .todo-item-main td:nth-child(3) {
   text-align: left;
 }
-
 .todo-item-description td {
   font-size: 10pt;
   padding-top: 2px;
+  text-align: center;
+}
+#todo-table-status {
+  margin-top: 0px;
+}
+.completed-table {
+  font-size: 12pt;
+  margin-top: 2em;
+}
+.completed-table th {
+  margin-bottom: 1em;
   text-align: center;
 }
 

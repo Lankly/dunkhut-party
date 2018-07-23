@@ -13,7 +13,17 @@ function completeTask (elem, id) {
     success: function (data) {
       showAlertBox(() => {
         // elem is a <td>
-        $(elem).parent().parent().remove();
+        let row = $(elem).parent().parent();
+
+        // Move to todo table
+        row.prependTo(".completed-table tbody");
+
+        // Reformat to look like completed items
+        row.removeClass('todo-item-main');
+        row.addClass('completed-item-main');
+        row.find('td:nth-child(3)').html(`
+          ${ makeReopenButton(row.attr('id')) }
+          `);
       });
     }
   });
@@ -49,6 +59,53 @@ function deleteTask (elem, id) {
   $('#confirmModal').dialog("open");
 }
 
+function reopenTask (elem, id) {
+  $.ajax({
+    url: '/tasks/reopen',
+    context: this,
+    type: 'post',
+    dataType: 'json',
+    mimeType: 'text/json; charset=x-user-defined',
+    data: { id: id },
+    success: function (data) {
+      showAlertBox(() => {
+        // elem is a <td>
+        let row = $(elem).parent().parent();
+
+        // Move to todo table
+        row.appendTo(".todo-table tbody");
+
+        // Reformat to look like todo items
+        row.removeClass('completed-item-main');
+        row.addClass('todo-item-main');
+        row.find('td:nth-child(3)').html(`
+          ${ makeCheckButton(row.attr('id')) }
+          ${ makeDeleteButton(row.attr('id')) }
+        `)
+      });
+    }
+  });
+}
+
+function makeCheckButton (id) {
+  return `<a class="check-button"
+             onclick="completeTask(this, ${id})">
+            <i class="fas fa-check-circle"></i>
+          </a>`;
+}
+function makeDeleteButton (id) {
+  return `<a class="delete-button"
+             onclick="deleteTask(this, ${id})">
+            <i class="fas fa-times-circle"></i>
+          </a>`;
+}
+function makeReopenButton (id) {
+  return `<a class="reopen-button"
+             onclick="reopenTask(this, ${id})">
+            <i class="fas fa-sync-alt"></i>
+          </a>`;
+}
+
 function showAlertBox (midway_func) {
   let alert_box = $('#alert-box');
   const alert_box_width = 30; // percent
@@ -70,8 +127,8 @@ function showAlertBox (midway_func) {
 
     midway_func();
 
-    // midway_func typically changes table, so fix table
-    fixTable();
+    // midway_func typically changes tables, so fix them
+    fixTables();
   });
 }
 
@@ -97,16 +154,29 @@ function toggleDescription (index) {
   }
 }
 
-function fixTable () {
-  $('.todo-item-main').each(function (index) {
-    $(this).find('td:nth-child(1)').text((index + 1) + ".");
-  });
+function fixTables () {
+  // List counts for both tables
+  ['.todo-item-main', '.completed-item-main']
+    .forEach((itemClass) => {
+      $(itemClass).each(function (index) {
+        $(this).find('td:nth-child(1)').text((index + 1) + ".");
+      });
+    });
 
+  // Set status message
   if ($('.todo-item-main').length > 0) {
     $('#todo-table-status').text("TODO:");
   }
   else {
     $('#todo-table-status').text("All done!");
+  }
+
+  // Completed table visibility
+  if ($('.completed-item-main').length > 0) {
+    $('.completed-table').show();
+  }
+  else {
+    $('.completed-table').hide();
   }
 }
 
@@ -121,7 +191,7 @@ $( function () {
   // Initialize confirm dialog
   $('#confirmModal').dialog({autoOpen: false, modal: true });
 
-  fixTable();
+  fixTables();
 
   // Hook into the submit function for createTask
   $('#createTask').submit((e) => {
@@ -144,18 +214,12 @@ $( function () {
         showAlertBox(() => {
           // Add new item to table
           let cur_count = $('.todo-item-main').length;
-          let new_row = `<tr class="todo-item-main">
+          let new_row = `<tr id="${data.obj[0].id}" class="todo-item-main">
             <td>${cur_count + 1}.</td>
             <td>${new_title}</td>
             <td>
-              <a class="check-button"
-                 onclick="completeTask(this, ${data.obj[0].id})">
-                <i class="fas fa-check-circle"></i>
-              </a>
- 
-              <a class="delete-button" onclick="deleteTask(this, ${data.obj[0].id})">
-                <i class="fas fa-times-circle"></i>
-              </a>
+              ${makeCheckButton(data.obj[0].id)}
+              ${makeDeleteButton(data.obj[0].id)}
             </td>
             </tr>`;
 

@@ -13,9 +13,18 @@ module.exports = function (app) {
 
   // Routes
   app.get('/tasks', function (req, res) {
+    let todo = [];
+
     getIncompleteTasks().then( (data) => {
-      console.log(data);
-      res.render('tasks', { title: 'TODO', todo: data });
+      todo = data;
+
+      return getCompletedTasks();
+    }).then( (completed) => {
+      res.render('tasks', {
+        title: 'TODO',
+        todo: todo,
+        completed: completed,
+      });
     })
       .catch( (err) => {
         res.end(JSON.stringify(err));
@@ -49,6 +58,16 @@ module.exports = function (app) {
     deleteTask(getParam(req, "id"))
       .then( (data) => {
         res.end(JSON.stringify({status: 200, obj: data}));
+      })
+      .catch( (err) => {
+        console.log(err);
+        res.end(JSON.stringify(err));
+      });
+  });
+  app.post('/tasks/reopen', function (req, res) {
+    reopenTask(getParam(req, "id"))
+      .then( (data) => {
+        res.end(JSON.stringify({ status: 200 }));
       })
       .catch( (err) => {
         console.log(err);
@@ -96,6 +115,12 @@ module.exports = function (app) {
 
   function getIncompleteTasks () {
     return db.any("SELECT * FROM tasks WHERE date_completed IS NULL;");
+  }
+
+  function reopenTask (id) {
+    return db.query("UPDATE tasks \
+        SET date_completed = NULL, completed_by = NULL \
+        WHERE id = ${id}", { id: id });
   }
 
   // Helpers
