@@ -1,0 +1,77 @@
+@import "buttons";
+@import "jquery";
+@import "todo";
+
+body {
+  background: white
+    url(/resources/images/dunkhut_bg.gif)
+    repeat
+    top left;
+  color: #402;
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 24px;
+  margin-bottom: 2em;
+}
+
+.container {
+}
+
+.content {
+  background-color: white;
+  font-family: tahoma;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 2000px;
+  min-width: 800px;
+  padding: 2em;
+  width: 50%;
+}
+
+ol {
+  padding: 0;
+}
+
+/* Header should not obviously be a link */
+.header-link, .header-link h1 {
+  color: #402;
+  text-decoration: none;
+}
+
+/* Alert Box */
+#alert-box {
+  /* start off the left side of the screen */
+  position: fixed;
+  top: 35%;
+  bottom: 35%;
+  right: 100%;
+  /* give it a decent size */
+  width: 30%;
+  height: 30%;
+  /* make it look pretty */
+  background-color: white;
+  border-radius: .1em;
+  filter: drop-shadow(0 0 0.75rem lightgreen);
+  /* center content  */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* icon should be big and green */
+  color: lime;
+  font-size: 64pt;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.is-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.small-icon {
+  font-size: 8pt;
+}
+

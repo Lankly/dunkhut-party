@@ -1,0 +1,24 @@
+/* Various buttons that can be used on multiple pages */
+
+.check-button {
+  color: lime;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.delete-button {
+  color: red;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.reopen-button {
+  color: dodgerblue;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+

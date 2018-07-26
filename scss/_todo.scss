@@ -1,0 +1,62 @@
+/* to-do-list page */
+
+.todo-table {
+  counter-reset: todoRowNumber;
+  td {
+    padding: .5em;
+    margin: 1em;
+  }
+
+  .todo-item-main {
+    counter-increment: todoRowNumber;
+
+    &:hover {
+      background-color: #ccffcc;
+    }
+
+    td {
+      padding-bottom: 0px;
+
+      &:first-child::before {
+        content: counter(todoRowNumber) ".";
+        min-width: 1em;
+      }
+      &:nth-child(1) {
+        text-align: right;
+      }
+      &:nth-child(2), 
+      &:nth-child(3) {
+        text-align: left;
+      }
+    }
+  }
+  .todo-item-description td {
+    font-size: 10pt;
+    padding-top: 2px;
+    text-align: center;
+  }
+}
+#todo-table-status {
+  margin-top: 0px;
+}
+.completed-table {
+  counter-reset: completedRowNumber;
+  font-size: 12pt;
+  margin-top: 2em;
+
+  th {
+    margin-bottom: 1em;
+    text-align: center;
+  }
+
+  .completed-item-main {
+    counter-increment: completedRowNumber;
+    td:first-child::before {
+      content: counter(completedRowNumber) ".";
+      min-width: 1em;
+    }
+  }
+}
+
+
+

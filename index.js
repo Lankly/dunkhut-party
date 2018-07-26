@@ -16,6 +16,15 @@ app.set('layout extractScripts', true);
 app.set('layout extractStyles', true);
 app.use(expressLayouts);
 
+// Use node-sass
+var sassMiddleware = require('node-sass-middleware');
+app.use(sassMiddleware({
+  src: `${__dirname}/scss`,
+  dest: `${__dirname}/resources/styles`,
+  debug: true,
+  outputStyle: 'compressed',
+  prefix: '/resources/styles'
+}));
 
 // Resources
 app.use('/resources', express.static(__dirname + '/resources'));
