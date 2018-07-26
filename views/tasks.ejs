@@ -8,7 +8,8 @@
           <% /* When you update this, do not forget to update createTask */ %>
           <tr id="<%= todo[i].id %>" class="todo-item-main">
             <td><%/* CSS will add a numbering to this */%></td>
-            <td class="<%= todo[i].description ? "is-link" : "" %>"
+            <% var expands = todo[i].description || todo[i].assigned_to %>
+            <td class="<%= expands ? "is-link" : "" %>"
                 onclick="<%= todo[i].description ? `toggleDescription(${i})` : "" %>">
               <%= todo[i].title %>
               <% if (todo[i].description) { %>
@@ -26,9 +27,19 @@
               </a>
             </td>
           </tr>
-          <% if (todo[i].description) { %>
+          <% if (expands) { %>
             <tr class="<%= `todo-item-description${i}` %>" hidden>
-              <td colspan="3"><%= todo[i].description %></td>
+              <td colspan="3">
+                <% if (todo[i].description) { %>
+                  <%= todo[i].description %>
+                  <% if (todo[i].assigned_to) { %>
+                    <br />
+                  <% } %> 
+                <% } %> 
+                <% if (todo[i].assigned_to) { %>
+                  Assigned to: <%= todo[i].assigned_to %>
+                <% } %>
+              </td>
             </tr>
           <% } %>
         <% } %>
