@@ -212,12 +212,12 @@ $( function () {
         showAlertBox(() => {
           // Add new item to table
           let cur_count = $('.todo-item-main').length;
-          let new_row = `<tr id="${data.obj[0].id}" class="todo-item-main">
+          let new_row = `<tr id="${data.data[0].id}" class="todo-item-main">
             <td>${cur_count + 1}.</td>
             <td>${new_title}</td>
             <td>
-              ${makeCheckButton(data.obj[0].id)}
-              ${makeDeleteButton(data.obj[0].id)}
+              ${makeCheckButton(data.data[0].id)}
+              ${makeDeleteButton(data.data[0].id)}
             </td>
             </tr>`;
 
