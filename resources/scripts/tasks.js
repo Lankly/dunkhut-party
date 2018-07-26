@@ -118,22 +118,22 @@ function makeReopenButton (id) {
 
 function showAlertBox (midway_func) {
   let alert_box = $('#alert-box');
-  const alert_box_width = 30; // percent
+  const alert_box_width = alert_box.width();
 
   alert_box.animate({
     // Move to center
-    right: (50 - alert_box_width / 2) + "%"
-  }, 500, () => {
+    right: (window.innerWidth - alert_box_width) / 2
+  }, 300, () => {
     // Wait half a second
     setTimeout(() => {
       // Slide off right side of screen
       alert_box.animate({
-        right: "-" + (alert_box_width / 2) + "%"
+        right: "-" + alert_box_width
       }, 500, () => {
         // Reset to offscreen on the left
         alert_box.css("right", "100%");
       });
-    }, 500)
+    }, 300)
 
     midway_func();
 
