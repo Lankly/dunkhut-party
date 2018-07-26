@@ -27,7 +27,7 @@
             </td>
           </tr>
           <% if (todo[i].description) { %>
-            <tr class="todo-item-description" hidden>
+            <tr class="<%= `todo-item-description${i}` %>" hidden>
               <td colspan="3"><%= todo[i].description %></td>
             </tr>
           <% } %>

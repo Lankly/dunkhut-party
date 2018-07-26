@@ -14,6 +14,12 @@ function completeTask (elem, id) {
       showAlertBox(() => {
         // elem is a <td>
         let row = $(elem).parent().parent();
+        let next_row = row.next('tr');
+
+        // Move description first, if it exists
+        if (!next_row.hasClass('todo-item-main')) {
+          next_row.prependTo(".completed-table tbody");
+        }
 
         // Move to todo table
         row.prependTo(".completed-table tbody");
@@ -69,6 +75,7 @@ function reopenTask (elem, id) {
       showAlertBox(() => {
         // elem is a <td>
         let row = $(elem).parent().parent();
+        let next_row = row.next('tr');
 
         // Move to todo table
         row.appendTo(".todo-table tbody");
@@ -80,6 +87,11 @@ function reopenTask (elem, id) {
           ${ makeCheckButton(row.attr('id')) }
           ${ makeDeleteButton(row.attr('id')) }
         `)
+
+        // Move description second, if it exists
+        if (!next_row.hasClass('completed-item-main')) {
+          next_row.appendTo(".todo-table tbody");
+        }
       });
     }
   });
@@ -131,8 +143,7 @@ function showAlertBox (midway_func) {
 }
 
 function toggleDescription (index) {
-  let desc = $($('.todo-item-main')[index])
-    .next(".todo-item-description")
+  let desc = $(`.todo-item-description${index}`)
 
   if (desc.is(":hidden")) {
     desc.show();
