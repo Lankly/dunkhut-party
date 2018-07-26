@@ -164,14 +164,6 @@ function toggleDescription (index) {
 }
 
 function fixTables () {
-  // List counts for both tables
-  ['.todo-item-main', '.completed-item-main']
-    .forEach((itemClass) => {
-      $(itemClass).each(function (index) {
-        $(this).find('td:nth-child(1)').text((index + 1) + ".");
-      });
-    });
-
   // Set status message
   if ($('.todo-item-main').length > 0) {
     $('#todo-table-status').text("TODO:");

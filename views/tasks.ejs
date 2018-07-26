@@ -7,7 +7,7 @@
         <% for (let i = 0; i < todo.length; ++i) { %>
           <% /* When you update this, do not forget to update createTask */ %>
           <tr id="<%= todo[i].id %>" class="todo-item-main">
-            <td><%= i + 1 %>.</td>
+            <td><%/* CSS will add a numbering to this */%></td>
             <td class="<%= todo[i].description ? "is-link" : "" %>"
                 onclick="<%= todo[i].description ? `toggleDescription(${i})` : "" %>">
               <%= todo[i].title %>
@@ -47,7 +47,7 @@
         <% for (let i = 0; i < completed.length; ++i) { %>
           <% /* When you update this, do not forget to update createTask */ %>
           <tr id="<%= completed[i].id %>" class="completed-item-main">
-            <td><%= i + 1 %>.</td>
+            <td><%/* CSS will also number this */%></td>
             <td>
               <%= completed[i].title %>
             </td>
