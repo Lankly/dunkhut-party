@@ -1,4 +1,13 @@
+@import "globals";
+
+
 /* Various buttons that can be used on multiple pages */
+
+button {
+  @media screen and (max-width: $break-small) {
+    font-size: .7em;
+  }
+}
 
 .check-button {
   color: lime;
