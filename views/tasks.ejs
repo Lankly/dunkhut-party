@@ -18,10 +18,12 @@
             </td>
             <td>
               <a class="check-button"
+                 title="Mark this task completed"
                  onclick="completeTask(this, <%= todo[i].id %>)">
                 <i class="fas fa-check-circle"></i>
               </a>
               <a class="delete-button"
+                 title="Delete this task"
                  onclick="deleteTask(this, <%= todo[i].id %>)">
                 <i class="fas fa-times-circle"></i>
               </a>
@@ -64,6 +66,7 @@
             </td>
             <td>
               <a class="reopen-button"
+                 title="Reopen this task"
                  onclick="reopenTask(this, <%= completed[i].id %>)">
                 <i class="fas fa-sync-alt"></i>
               </a>

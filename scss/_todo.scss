@@ -39,8 +39,8 @@
       }
     }
   }
-  .todo-item-description td {
-    font-size: 10pt;
+  tr[class^="todo-item-description"] td {
+    font-size: .5em;
     padding-top: 2px;
     text-align: center;
   }
