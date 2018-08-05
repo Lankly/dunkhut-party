@@ -5,5 +5,8 @@ npm-debug.log
 # compiled
 resources/styles/
 
+# discord
+config/bot-config.json
+
 # vim
 *~
