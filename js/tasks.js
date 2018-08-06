@@ -5,10 +5,10 @@ const helpers = require(`${__dirname}/helpers`);
 const db = helpers.db;
 const columns = ["assigned_to", "description", "start_time", "title"];
 
-module.exports = function (app, skip_routes) {
+module.exports = function (app) {
 
   // Routes
-  if (!skip_routes) {
+  if (app) {
     app.get('/tasks', function (req, res) {
       let todo = [];
 
@@ -56,6 +56,8 @@ module.exports = function (app, skip_routes) {
 
   let createTask = helpers.createCreateFunc('Tasks', columns);
   let deleteTask = helpers.createDeleteFunc('Tasks');
+  let updateTask = helpers.createUpdateFunc('Tasks');
+  let getTask = helpers.createGetFunc('Tasks');
   function completeTask (id, completed_by) {
     return db.query(
       "UPDATE tasks SET completed_by = ${completed_by}, \
@@ -90,6 +92,8 @@ module.exports = function (app, skip_routes) {
     completeTask: completeTask,
     getCompletedTasks: getCompletedTasks,
     getIncompleteTasks: getIncompleteTasks,
+    getTask: getTask,
+    updateTask: updateTask,
   };
 }
 

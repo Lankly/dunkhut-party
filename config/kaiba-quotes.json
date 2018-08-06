@@ -17,6 +17,9 @@
     "Why don’t you look for an opponent you can actually beat? Like an infant, or a monkey.",
     "You'll have the rest of your entire life to brood over this defeat."
   ],
+  "failure": [
+    "Fool! That's not how this game works."
+  ],
   "list_completed": [
      "I have a multi-million dollar company to run.",
      "The memory of the past means as much to me as a crumbling piece of rock!"

@@ -48,11 +48,24 @@ exports.createDeleteFunc = function (table_name) {
 /**
  * Creates a function for setting the value of the specified column.
  */
-exports.createColSetter = function (table_name, column) {
-  return function (id, val) {
+exports.createUpdateFunc = function (table_name) {
+  return function (column, id, val) {
     return db.query(`UPDATE ${table_name}
         SET ${column} = $\{val}
         WHERE id = $\{id}`, { id: id, val: val });
+  }
+};
+
+
+/**
+ * Creates a function for setting the value of the specified column.
+ */
+exports.createGetFunc = function (table_name) {
+  return function (id) {
+    return db.one(`SELECT *
+        FROM ${table_name}
+        WHERE id = $\{id}`
+      , { id: id });
   }
 };
 
