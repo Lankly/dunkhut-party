@@ -21,8 +21,7 @@ module.exports = {
       env_production : {
         NODE_ENV: 'production'
       },
-      watch: ['bot.js'],
-      ignore_watch: ['node_modules', 'resources']
+      watch: ['bot.js', 'config/kaiba-quotes.json']
     }
   ],
 };

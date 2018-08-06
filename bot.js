@@ -2,6 +2,13 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config/bot-config.json");
+const all_quotes = require("./config/kaiba-quotes.json");
+
+// Load up dunkhut.party functions
+const tasks = require("./js/tasks")(null, true);
+
+// Data we will keep track of
+let last_id = 0;
 
 // Startup event
 client.on("ready", () => {
@@ -20,7 +27,6 @@ client.on("guildCreate", guild => {
 
 
 client.on("message", async message => {
-  // This event will run on every single message received, from any channel or DM.
 
   // Ignore other bots
   if(message.author.bot) return;
@@ -29,26 +35,105 @@ client.on("message", async message => {
   if(message.content.indexOf(config.prefix) !== 0) return;
 
   // Here we separate our "command" name, and our "arguments" for the command. 
-  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-  const command = args.shift().toLowerCase();
+  let args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  let command = args.shift().toLowerCase();
+  let quotes = ["Fool! That's not how this game works."];
+  let output = "";
 
   switch (command) {
     case "ping":
       const m = await message.channel.send("Ping?");
       m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
+      quotes = [];
       break;
 
-    case "say":
-      // makes the bot say something and delete the message.
-      const sayMessage = args.join(" ");
-      message.delete().catch(O_o=>{}); 
-      message.channel.send(sayMessage);
+    // Create
+    case "add":
+    case "create":
+    case "new":
+      switch (args.shift().toLowerCase()) {
+        case "task":
+          last_id = (await tasks.createTask({
+            assigned_to: null,
+            description: null,
+            start_time: new Date(),
+            title: args.join(" ")
+          }))[0].id;
+          quotes = all_quotes.create;
+          output = ` (#${last_id})`;
+          break;
+        default:
+          break;
+      }
+      break;
+
+    // Read
+    case "show":
+    case "list":
+      switch (args.shift().toLowerCase()) {
+        case "tasks":
+        case "todo":
+        case "incomplete":
+          let incomplete_tasks = await tasks.getIncompleteTasks();
+          quotes = all_quotes.list_incomplete;
+          output = "\n";
+          incomplete_tasks.forEach((task) => {
+            output += `#${task.id}: ${task.title}\n`;
+          });
+          break;
+
+        case "complete":
+        case "completed":
+        case "finished":
+          let completed_tasks = await tasks.getCompletedTasks();
+          quotes = all_quotes.list_completed;
+          output = "\n";
+          completed_tasks.forEach((task) => {
+            output += `#${task.id}: ${task.title}\n`;
+          });
+          break;
+        default:
+          break;
+      }
+      break;
+
+    // Update
+    case "complete":
+    case "finish":
+      command = args.shift().toLowerCase();
+      if (command === "task") { 
+        command = args.shift().toLowerCase();
+      }
+      tasks.completeTask(command.replace(/\D/, ""));
+      quotes = all_quotes.complete;
+      break;
+
+    // Delete
+    case "delete":
+    case "remove":
+      switch (args.shift().toLowerCase()) {
+        case "task":
+          tasks.deleteTask(args[0].replace(/\D/, ""));
+          quotes = all_quotes.delete;
+          break;
+        default:
+          break;
+      }
+      break;
+
+    case "quote":
+      quotes = all_quotes.miscellaneous;
       break;
 
     default:
-      message.channel.send("Sorry! I didn't understand that. Yell at Lan.");
       break;
   }
+
+  let selected = "";
+  if (quotes.length > 0) {
+    selected = quotes[~~(quotes.length * Math.random())];
+  }
+  message.channel.send(selected + output);
 });
 
 client.login(config.token);

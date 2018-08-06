@@ -1,53 +1,56 @@
 'use strict'
 
-module.exports = function (app) {
-  // Constants
-  const helpers = require(`${__dirname}/helpers`);
-  const db = helpers.db;
-  const columns = ["assigned_to", "description", "start_time", "title"];
+// Constants
+const helpers = require(`${__dirname}/helpers`);
+const db = helpers.db;
+const columns = ["assigned_to", "description", "start_time", "title"];
+
+module.exports = function (app, skip_routes) {
 
   // Routes
-  app.get('/tasks', function (req, res) {
-    let todo = [];
+  if (!skip_routes) {
+    app.get('/tasks', function (req, res) {
+      let todo = [];
 
-    getIncompleteTasks().then( (data) => {
-      todo = data;
+      getIncompleteTasks().then( (data) => {
+        todo = data;
 
-      return getCompletedTasks();
-    }).then( (completed) => {
-      res.render('tasks', {
-        title: 'TODO',
-        todo: todo,
-        completed: completed,
-      });
-    })
-      .catch(helpers.createErrorFunc(res));
-  });
-  app.post('/tasks/complete', function (req, res) {
-    completeTask(getParam(req, "id"), getParam(req, "completed_by"))
-      .then(helpers.createSuccessFunc(res))
-      .catch(helpers.createErrorFunc(res));
-  });
-  app.post('/tasks/create', function (req, res) {
-    let task = { };
-    columns.forEach( (prop) => {
-      task[prop] = req.param(prop) || req[prop] || null;
+        return getCompletedTasks();
+      }).then( (completed) => {
+        res.render('tasks', {
+          title: 'TODO',
+          todo: todo,
+          completed: completed,
+        });
+      })
+        .catch(helpers.createErrorFunc(res));
     });
+    app.post('/tasks/complete', function (req, res) {
+      completeTask(getParam(req, "id"), getParam(req, "completed_by"))
+        .then(helpers.createSuccessFunc(res))
+        .catch(helpers.createErrorFunc(res));
+    });
+    app.post('/tasks/create', function (req, res) {
+      let task = { };
+      columns.forEach( (prop) => {
+        task[prop] = req.param(prop) || req[prop] || null;
+      });
 
-    createTask(task)
-      .then(helpers.createSuccessFunc(res, true))
-      .catch(helpers.createErrorFunc(res));
-  });
-  app.post('/tasks/delete', function (req, res) {
-    deleteTask(getParam(req, "id"))
-      .then(helpers.createSuccessFunc(res))
-      .catch(helpers.createErrorFunc(res));
-  });
-  app.post('/tasks/reopen', function (req, res) {
-    reopenTask(getParam(req, "id"))
-      .then(helpers.createSuccessFunc(res))
-      .catch(helpers.createErrorFunc(res));
-  });
+      createTask(task)
+        .then(helpers.createSuccessFunc(res, true))
+        .catch(helpers.createErrorFunc(res));
+    });
+    app.post('/tasks/delete', function (req, res) {
+      deleteTask(getParam(req, "id"))
+        .then(helpers.createSuccessFunc(res))
+        .catch(helpers.createErrorFunc(res));
+    });
+    app.post('/tasks/reopen', function (req, res) {
+      reopenTask(getParam(req, "id"))
+        .then(helpers.createSuccessFunc(res))
+        .catch(helpers.createErrorFunc(res));
+    });
+  }
 
   // Functions
 
@@ -79,5 +82,14 @@ module.exports = function (app) {
       || req.params[param_name]
       || req[param_name];
   }
+
+  // Return all functions
+  return {
+    createTask: createTask,
+    deleteTask: deleteTask,
+    completeTask: completeTask,
+    getCompletedTasks: getCompletedTasks,
+    getIncompleteTasks: getIncompleteTasks,
+  };
 }
 
