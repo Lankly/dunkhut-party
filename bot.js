@@ -91,13 +91,13 @@ client.on("message", async message => {
 
           switch (last_type) {
             case TYPE_TASK:
-              
               await tasks.updateTask(
                 "description"
                 , last_id
                 , args.join(" "));
               quotes = all_quotes.create;
               break;
+
             default:
               break;
           }
@@ -205,6 +205,19 @@ client.on("message", async message => {
       await tasks.updateTask("assigned_to", last_id, args.join(" "));
       quotes = all_quotes.created;
       break;
+    case "reopen":
+      if (args[0].toLowerCase() === "task") {
+        args = args.slice(1);
+      }
+
+      next = args[0].replace(/\D/, "");
+      if (next === "") { break; }
+      last_id = parseInt(next);
+      last_type = TYPE_TASK;
+
+      await tasks.updateTask("date_completed", last_id, null);
+      quotes = all_quotes.create;
+      break;
 
     // Delete
     case "delete":
@@ -252,7 +265,7 @@ client.on("message", async message => {
       quotes = [];
       output = "Usage:\n"
         +  "\tTasks:\n"
-        +  "\t\t`!add task My New Task\n`"
+        +  "\t\t`!add task My New Task`\n"
         +  "\t\t`!add description (to #) My New Desc`\n"
         +  "\t\t`!assign (#) to Person`\n"
         +  "\t\t`!delete task #`\n"
@@ -260,6 +273,7 @@ client.on("message", async message => {
         +  "\t\t`!show tasks`\n"
         +  "\t\t`!show task #`\n"
         +  "\t\t`!show completed tasks`\n"
+        +  "\t\t`!reopen (task) #`\n"
         +  "\tFun:\n"
         +  "\t\t`!quote`\n"
         +  "\t\t`!ping`\n";
