@@ -82,7 +82,7 @@ client.on("message", async message => {
                 break;
             }
 
-            next = args[2].replace(/\D/, "");
+            next = args[2].replace(/\D/g, "");
             if (next !== "") {
               last_id = parseInt(next);
             }
@@ -138,7 +138,7 @@ client.on("message", async message => {
         case "task":
           if (args.length < 1) { break; }
 
-          next = args[0].replace(/\D/, "");
+          next = args[0].replace(/\D/g, "");
           if (next === "") { break; }
 
           value = await tasks.getTask(parseInt(next));
@@ -174,7 +174,7 @@ client.on("message", async message => {
         command = args.shift().toLowerCase();
       }
 
-      last_id = command.replace(/\D/, "");
+      last_id = command.replace(/\D/g, "");
       last_type = TYPE_TASK;
       await tasks.completeTask(last_id);
       quotes = all_quotes.complete;
@@ -187,35 +187,48 @@ client.on("message", async message => {
       // !assign name to #
       last_type = TYPE_TASK;
 
-      next = args[0].replace(/\D/, "");
+      next = args[0].replace(/\D/g, "");
       if (next !== "") {
         last_id = parseInt(next);
         args = args.slice(2);
       }
+      else if (args[0].toLowerCase() === "to") {
+        args = args.slice(1); 
+      }
       else {
-        next = args[args.length - 1].replace(/\D/, "");
+        next = args[args.length - 1].replace(/\D/g, "");
         if (next === "") { break; }
         last_id = parseInt(next);
         args = args.slice(0, -2);
       }
 
-      // Remove lingering "to"
-      if (arg[0].toLowerCase() === "to") { args = args.slice(1); }
-
       await tasks.updateTask("assigned_to", last_id, args.join(" "));
-      quotes = all_quotes.created;
+      quotes = all_quotes.create;
       break;
     case "reopen":
       if (args[0].toLowerCase() === "task") {
         args = args.slice(1);
       }
 
-      next = args[0].replace(/\D/, "");
+      next = args[0].replace(/\D/g, "");
       if (next === "") { break; }
       last_id = parseInt(next);
       last_type = TYPE_TASK;
 
       await tasks.updateTask("date_completed", last_id, null);
+      quotes = all_quotes.create;
+      break;
+    case "cancel":
+      if (args[0].toLowerCase() === "task") {
+        args = args.slice(1);
+      }
+
+      next = args[0].replace(/\D/g, "");
+      if (next === "") { break; }
+      last_id = parseInt(next);
+      last_type = TYPE_TASK;
+
+      await tasks.updateTask("cancelled", last_id, true);
       quotes = all_quotes.create;
       break;
 
@@ -238,7 +251,7 @@ client.on("message", async message => {
           break;
       }
 
-      last_id = args[0].replace(/\D/, "");
+      last_id = args[0].replace(/\D/g, "");
       quotes = all_quotes.delete;
 
       // Make the delete
@@ -268,6 +281,7 @@ client.on("message", async message => {
         +  "\t\t`!add task My New Task`\n"
         +  "\t\t`!add description (to #) My New Desc`\n"
         +  "\t\t`!assign (#) to Person`\n"
+        +  "\t\t`!cancel (task) #`\n"
         +  "\t\t`!delete task #`\n"
         +  "\t\t`!complete task #`\n"
         +  "\t\t`!show tasks`\n"
