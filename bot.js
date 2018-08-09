@@ -53,6 +53,8 @@ client.on("message", async message => {
     case "add":
     case "create":
     case "new":
+      removeIgnored(["new", "a"]);
+
       switch (args.shift().toLowerCase()) {
         case "task":
           last_id = (await tasks.createTask({
@@ -71,23 +73,7 @@ client.on("message", async message => {
           // Possible syntaxes:
           // !add description to task #70: My Description
           // !add description My Description (applies to last obj)
-          if (args[0] === "to") {
-            next = args[1].toLowerCase();
-            switch (next) {
-              case "task":
-              case "todo":
-                last_type = TYPE_TASK;
-              default:
-                last_type = TYPE_UNKNOWN;
-                break;
-            }
-
-            next = args[2].replace(/\D/g, "");
-            if (next !== "") {
-              last_id = parseInt(next);
-            }
-            args = args.slice(3);
-          }
+          extractArgs(["to"]);
 
           switch (last_type) {
             case TYPE_TASK:
@@ -110,7 +96,9 @@ client.on("message", async message => {
     // Read
     case "show":
     case "list":
-      switch (args.shift().toLowerCase()) {
+      next = getNext(true);
+
+      switch (next) {
         case "tasks":
         case "todo":
         case "incomplete":
@@ -135,47 +123,43 @@ client.on("message", async message => {
           });
           break;
 
-        case "task":
-          if (args.length < 1) { break; }
-
-          next = args[0].replace(/\D/g, "");
-          if (next === "") { break; }
-
-          value = await tasks.getTask(parseInt(next));
-
-          output = value.title || "N/A";
-          if (value.date_completed) {
-            output += " (Completed)";
-          }
-          output += "\n";
-          if (value.description) {
-            output += `Description: ${value.description}\n`;
-          }
-          if (value.assigned_to) {
-            output += `Assigned to ${value.assigned_to}\n`;
-          }
-          if (value.start_date) {
-            output += `Start time: ${value.start_date}\n`;
-          }
-
-          quotes = [];
-          break;
-
+        // Single object section
         default:
-          break;
+          args.unshift(next);
+          extractArgs();
+          switch (last_type) {
+            case TYPE_TASK:
+              value = await tasks.getTask(last_id);
+
+              output = value.title || "N/A";
+              if (value.date_completed) {
+                output += " (Completed)";
+              }
+              output += "\n";
+              if (value.description) {
+                output += `Description: ${value.description}\n`;
+              }
+              if (value.assigned_to) {
+                output += `Assigned to ${value.assigned_to}\n`;
+              }
+              if (value.start_date) {
+                output += `Start time: ${value.start_date}\n`;
+              }
+
+              quotes = [];
+              break;
+
+            default:
+              break;
+          }
       }
       break;
 
     // Update
     case "complete":
     case "finish":
-      command = args.shift().toLowerCase();
-      if (command === "task") { 
-        command = args.shift().toLowerCase();
-      }
+      extractArgs();
 
-      last_id = command.replace(/\D/g, "");
-      last_type = TYPE_TASK;
       await tasks.completeTask(last_id);
       quotes = all_quotes.complete;
       break;
@@ -187,20 +171,7 @@ client.on("message", async message => {
       // !assign name to #
       last_type = TYPE_TASK;
 
-      next = args[0].replace(/\D/g, "");
-      if (next !== "") {
-        last_id = parseInt(next);
-        args = args.slice(2);
-      }
-      else if (args[0].toLowerCase() === "to") {
-        args = args.slice(1); 
-      }
-      else {
-        next = args[args.length - 1].replace(/\D/g, "");
-        if (next === "") { break; }
-        last_id = parseInt(next);
-        args = args.slice(0, -2);
-      }
+      extractArgs(["to"], true);
 
       await tasks.updateTask("assigned_to", last_id, args.join(" "));
       quotes = all_quotes.create;
@@ -292,6 +263,89 @@ client.on("message", async message => {
         +  "\t\t`!quote`\n"
         +  "\t\t`!ping`\n";
       break;
+  }
+
+  /**
+   * Removes the type and id information from the args array and sets
+   * the last_type and last_id variables to those values.
+   *
+   * @param {Array} ignored_words A list of words allowed around the type
+   * and id arguments that should be removed from args altogether.
+   * @param {bool} look_at_end Indicates whether or not to look for the
+   * type and id information at the end of args.
+   */
+  function extractArgs (ignored_words, look_at_end) {
+    removeIgnored(ignored_words);
+
+    // Check for type before id
+    let found_type = argsCheckType();
+
+    // Remove any ignored words around this area too
+    removeIgnored(ignored_words);
+
+    // Check to see if next word is an id
+    if (args.length === 0) { return; }
+    let id = args[0];
+    let found_id = false;
+    // @s indicate someone was mentioned. These contain numbers, and
+    // indicate that we've reached the start of the real arguments
+    if (id.indexOf("@") < 0) {
+      id = id.replace(/\D/g, "");
+      if (id !== "") {
+        console.log("ID", id);
+        last_id = parseInt(id);
+        args = args.slice(1);
+      }
+    }
+
+    if (!found_type) {
+      removeIgnored(ignored_words);
+    }
+
+    // Check for type before id
+    argsCheckType();
+
+    // Stop if we found the id, or aren't looking at the end of args
+    if (found_id || !look_at_end) { return; }
+
+    // To look at end, flip the array around and try this once more
+    args = args.reverse();
+    extractArgs(ignored_words);
+    args = args.reverse();
+  }
+  // Remove any ignored words at start of args
+  function removeIgnored (ignored) {
+    if (args.length === 0 || !ignored) { return; }
+
+    while (ignored.includes(args[0].toLowerCase())) {
+      args = args.slice(1);
+    }
+  }
+  function argsCheckType () {
+    if (args.length === 0) { return; }
+
+    switch (args[0].toLowerCase()) {
+      case "task":
+      case "tasks":
+      case "todo":
+      case "todos":
+        last_type = TYPE_TASK;
+        args = args.slice(1);
+        break;
+
+      default:
+        return false;
+    }
+
+    return true;
+  }
+  function getNext(remove) {
+    if (!args || args.length === 0) { return ""; }
+
+    let to_return = args[0];
+    if (remove) { args = args.slice(1); }
+
+    return to_return;
   }
 
   let selected = "";
