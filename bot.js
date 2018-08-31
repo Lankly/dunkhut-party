@@ -31,10 +31,15 @@ client.on("guildCreate", guild => {
 client.on("message", async message => {
 
   // Ignore other bots
-  if(message.author.bot) return;
+  if (message.author.bot) return;
+
+  // Special joke case: "F"
+  if (message.content.trim().toLowerCase() === 'f') {
+    return message.channel.send("Respects paid.");
+  }
 
   // Ignore messages that don't start with our prefix
-  if(message.content.indexOf(config.prefix) !== 0) return;
+  if (message.content.indexOf(config.prefix) !== 0) return;
 
   // Here we separate our "command" name, and our "arguments" for the command. 
   let args = message.content.slice(config.prefix.length).trim().split(/ +/g);
@@ -245,7 +250,6 @@ client.on("message", async message => {
 
     case "h":
     case "help":
-    default:
       quotes = [];
       output = "Usage:\n"
         +  "\tTasks:\n"
@@ -263,6 +267,8 @@ client.on("message", async message => {
         +  "\t\t`!quote`\n"
         +  "\t\t`!ping`\n";
       break;
+    default:
+      return;
   }
 
   /**
